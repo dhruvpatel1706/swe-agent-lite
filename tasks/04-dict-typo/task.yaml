@@ -1,0 +1,8 @@
+id: 04-dict-typo
+title: "get_user_name always returns None"
+difficulty: easy
+problem: |
+  `get_user_name(user)` in repo/solution.py should return the `name` field
+  from a user dict, or "anonymous" if the field is missing. Right now it
+  always returns "anonymous" even when `name` is set. Find the bug.
+tags: [typo]

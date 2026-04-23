@@ -1,0 +1,8 @@
+id: 01-off-by-one
+title: "sum_first_n returns the wrong sum"
+difficulty: easy
+problem: |
+  The function `sum_first_n(n)` in repo/solution.py should return the sum of
+  the first n *positive* integers. Right now it's returning the wrong value.
+  Fix it.
+tags: [off-by-one, range]

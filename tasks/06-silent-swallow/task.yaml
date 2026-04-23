@@ -1,0 +1,9 @@
+id: 06-silent-swallow
+title: "parse_int returns 0 for invalid strings instead of None"
+difficulty: easy
+problem: |
+  `parse_int(s)` in repo/solution.py should return the integer if `s` parses,
+  or None if it doesn't. The current implementation catches the exception and
+  returns 0 instead of None, which lets bad inputs silently pass as zeroes.
+  Fix it to return None on parse failure.
+tags: [silent-error, wrong-sentinel]

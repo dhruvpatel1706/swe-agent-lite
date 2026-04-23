@@ -1,0 +1,9 @@
+id: 08-recursion-base
+title: "factorial overflows the call stack"
+difficulty: medium
+problem: |
+  `factorial(n)` in repo/solution.py should compute n! for n >= 0, with
+  factorial(0) == 1. Right now the recursion has no base case and blows up
+  the call stack with a RecursionError. Add the base case so the function
+  terminates.
+tags: [missing-base-case, recursion]

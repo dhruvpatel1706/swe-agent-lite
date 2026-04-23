@@ -1,0 +1,8 @@
+id: 07-missing-filter
+title: "filter_long returns everything, not just long strings"
+difficulty: medium
+problem: |
+  `filter_long(strings, min_length)` in repo/solution.py should return only
+  the strings whose length is strictly greater than `min_length`. Right now
+  it returns every string. Fix it.
+tags: [missing-condition, comprehension]

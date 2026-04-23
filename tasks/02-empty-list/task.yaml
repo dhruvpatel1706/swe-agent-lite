@@ -1,0 +1,8 @@
+id: 02-empty-list
+title: "average crashes on empty input"
+difficulty: easy
+problem: |
+  `average(xs)` in repo/solution.py should return the arithmetic mean of a
+  list, or 0 when the list is empty. Right now it crashes on empty lists.
+  Fix it so the empty-list case returns 0.
+tags: [edge-case, division-by-zero]

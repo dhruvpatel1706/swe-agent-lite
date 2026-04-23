@@ -1,0 +1,10 @@
+id: 05-mutable-default
+title: "add_item leaks state between calls"
+difficulty: medium
+problem: |
+  `add_item(item, items=[])` in repo/solution.py is supposed to be a pure
+  function — given (item, items) it returns a new list with item appended,
+  and when called with just `item` it should return a single-element list.
+  Instead, successive calls accumulate items across calls. Fix it without
+  changing the signature.
+tags: [mutable-default]

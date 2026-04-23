@@ -1,0 +1,7 @@
+id: 03-wrong-comparison
+title: "is_adult returns True for age 17"
+difficulty: easy
+problem: |
+  `is_adult(age)` in repo/solution.py should return True iff `age` is 18 or
+  more. Currently it also returns True for age 17. Fix it.
+tags: [wrong-operator]
