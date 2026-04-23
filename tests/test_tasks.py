@@ -7,10 +7,12 @@ from swe_agent_lite.tasks import list_tasks, load_task, stage_task
 
 def test_list_tasks_finds_the_suite():
     tasks = list_tasks()
-    # v0.1 ships 8 hand-curated tasks. If any are missing we should know.
-    assert len(tasks) == 8
+    # v0.2 ships 13 hand-curated tasks (8 single-file + 3 multi-file + 2 more
+    # easy fixes). If any are missing we should know.
+    assert len(tasks) == 13
     ids = {t.id for t in tasks}
     for expected in [
+        # v0.1 single-file tasks
         "01-off-by-one",
         "02-empty-list",
         "03-wrong-comparison",
@@ -19,8 +21,30 @@ def test_list_tasks_finds_the_suite():
         "06-silent-swallow",
         "07-missing-filter",
         "08-recursion-base",
+        # v0.2 additions
+        "09-circular-import",
+        "10-validator-mismatch",
+        "11-wrong-regex",
+        "12-missing-import",
+        "13-shared-state-bug",
     ]:
         assert expected in ids
+
+
+def test_multifile_tasks_have_multiple_repo_files():
+    """v0.2 multi-file tasks must actually have >1 file in repo/."""
+    for tid in ("09-circular-import", "10-validator-mismatch", "13-shared-state-bug"):
+        t = load_task(tid)
+        # Test through staging so we're exercising what the agent sees
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, _ = stage_task(t, Path(tmp))
+            py_files = list(repo.glob("*.py"))
+            assert len(py_files) >= 2, f"{tid} should have multiple .py files"
+
+
+from pathlib import Path  # noqa: E402 (needed only for the multifile test above)
 
 
 def test_load_task_by_id():

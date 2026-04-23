@@ -1,0 +1,11 @@
+id: 09-circular-import
+title: "formatter.py imports from the wrong module"
+difficulty: medium
+problem: |
+  This package has two modules: `calculator.py` and `formatter.py`.
+  `calculator.py` provides an `add(a, b)` function; `formatter.py` is
+  supposed to format the result of `calculator.add` as a currency string.
+  Right now `formatter.py` imports from a module that doesn't exist
+  (`mathutils`), so every test crashes with ImportError. Fix the import
+  so the tests pass. Don't restructure the modules — just fix the one line.
+tags: [multi-file, wrong-import]

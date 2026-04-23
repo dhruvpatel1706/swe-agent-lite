@@ -1,6 +1,6 @@
 # swe-agent-lite
 
-**A SWE-bench-style agent benchmark for Claude.** Eight hand-curated bug-fix tasks. Five tools (`read_file`, `list_dir`, `edit_file`, `run_tests`, `finish`). Sandboxed per-task workspace. Scored by whether pytest passes after the agent stops.
+**A SWE-bench-style agent benchmark for Claude.** **13 hand-curated bug-fix tasks** (3 of them multi-file, new in v0.2). Five tools (`read_file`, `list_dir`, `edit_file`, `run_tests`, `finish`). Sandboxed per-task workspace. Scored by whether pytest passes after the agent stops.
 
 Unlike the big benchmarks, every task here takes ~30 seconds to run and has a known-good human fix so you can verify the scorer is honest. The point isn't absolute pass rate — it's failure-mode legibility. When the agent fails a task, `swe-agent-lite` tells you *how* (never ran tests, ran tests but didn't edit, edit didn't verify, infinite loop, etc.), which is the information you actually need to tune the agent.
 
@@ -18,6 +18,11 @@ $ swe-agent-lite tasks
 │ 06-silent-swallow   │ parse_int returns 0 for invalid strings      │ easy       │ silent-error             │
 │ 07-missing-filter   │ filter_long returns everything               │ medium     │ missing-condition        │
 │ 08-recursion-base   │ factorial overflows the call stack           │ medium     │ missing-base-case        │
+│ 09-circular-import  │ formatter.py imports from the wrong module   │ medium     │ multi-file, wrong-import │
+│ 10-validator-misma… │ validator.py rejects valid input             │ medium     │ multi-file, case-mismat… │
+│ 11-wrong-regex      │ extract_emails misses periods in local-part  │ medium     │ regex                    │
+│ 12-missing-import   │ word_count uses re.findall, no import        │ easy       │ missing-import           │
+│ 13-shared-state-bug │ two Cart instances share the same items list │ hard       │ multi-file, class-attr   │
 └─────────────────────┴──────────────────────────────────────────────┴────────────┴──────────────────────────┘
 
 $ swe-agent-lite run
@@ -80,10 +85,12 @@ export ANTHROPIC_API_KEY=sk-ant-...
 
 ```bash
 swe-agent-lite tasks                    # List the bundled task suite
-swe-agent-lite run                      # Run the full suite
-swe-agent-lite run 01-off-by-one 03-wrong-comparison   # Run specific tasks
-swe-agent-lite run --model claude-sonnet-4-6   # Try a different model
-swe-agent-lite run --max-iterations 10         # Tighter tool-use budget
+swe-agent-lite run                      # Run the full 13-task suite
+swe-agent-lite run 01-off-by-one 09-circular-import   # Run specific tasks
+swe-agent-lite run --model claude-sonnet-4-6          # Try a different model
+swe-agent-lite run --max-iterations 10                # Tighter tool-use budget
+swe-agent-lite run --difficulty easy                  # v0.2: filter by difficulty
+swe-agent-lite run --only-multifile                   # v0.2: only the 3 multi-file tasks
 swe-agent-lite list                     # Past runs, newest first
 swe-agent-lite show 20260423T213000Z    # Full trajectory dump
 ```
@@ -132,17 +139,29 @@ Because the cases are hand-curated and small, you can reproduce a run with any m
 
 ## Limitations
 
-- **Small N (8 tasks).** This is a smoke test, not a benchmark with tight confidence intervals. A ±1 task difference is noise.
-- **Easy tasks by design.** These are bugs you could fix yourself in 30 seconds. They measure "can the agent execute the read-edit-verify loop reliably", not "can the agent reason about complex code". Both matter; this one is cheaper to measure.
-- **Static tasks, future leak risk.** Once a task's canonical fix ends up in pre-training, the benchmark gets easier for future model versions. That's fine for a public portfolio piece; serious use would rotate in fresh tasks.
-- **Python only.** Every task is a Python file with a pytest suite. Other languages would need a pluggable runner.
+- **Small N (13 tasks).** Up from 8 in v0.1; still a smoke test, not a benchmark with tight confidence intervals. A ±2 task difference is noise.
+- **Mostly easy/medium tasks.** These are bugs you could fix yourself in 30 seconds to a couple of minutes. They measure "can the agent execute the read-edit-verify loop reliably (across multiple files)", not "can the agent reason about complex code". Both matter; this is the cheaper-to-measure half.
+- **Static tasks, future leak risk.** Once a task's canonical fix ends up in pre-training, the benchmark gets easier for future model versions. Fine for a portfolio piece; serious use would rotate in fresh tasks.
+- **Python only.** Every task is Python + pytest. Other languages would need a pluggable runner.
+
+## Changelog
+
+### v0.2 (2026-04-23)
+- **5 new tasks (8 → 13)** including **3 multi-file tasks** (09-circular-import, 10-validator-mismatch, 13-shared-state-bug). First hard-difficulty task (13).
+- **`--difficulty` filter** on `run` (easy / medium / hard).
+- **`--only-multifile` flag** for the multi-file subset.
+- **Committed artifact** (`artifacts/sample_suite.txt`) showing the full v0.2 suite shape so reviewers can see what's in the benchmark without installing.
+- **Regression guard** on multi-file tasks: `test_multifile_tasks_have_multiple_repo_files` confirms the 3 multi-file tasks actually have >1 .py file in `repo/`.
+
+### v0.1 (2026-04-23)
+- Initial release — 8 single-file tasks, 5-tool agent surface, sandboxed workspace, failure-mode tags, per-task JSON run artifacts.
 
 ## Roadmap
 
-- **v0.2** — more tasks (target: 20), including a couple that span multiple files.
-- **v0.2** — optional `write_file` tool behind a `--allow-new-files` flag.
-- **v0.3** — aggregate drift report across runs (tag-level pass-rate trends).
-- **v0.3** — per-task token/cost reporting.
+- **v0.3** — more tasks (target: 30), include 3-file dependencies and one task requiring a `git log` tool.
+- **v0.3** — optional `write_file` tool behind a `--allow-new-files` flag.
+- **v0.4** — aggregate drift report across runs (tag-level pass-rate trends).
+- **v0.4** — per-task token/cost reporting via `input_tokens`/`output_tokens`.
 
 ## License
 

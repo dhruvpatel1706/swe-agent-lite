@@ -59,6 +59,17 @@ def run_cmd(
     max_iterations: int = typer.Option(
         None, "--max-iterations", help="Cap tool-use iterations per task."
     ),
+    difficulty: str = typer.Option(
+        None,
+        "--difficulty",
+        "-d",
+        help="Filter to tasks of a single difficulty: easy, medium, or hard.",
+    ),
+    only_multifile: bool = typer.Option(
+        False,
+        "--only-multifile",
+        help="Only run tasks tagged with `multi-file`.",
+    ),
 ) -> None:
     """Run the benchmark. Saves a JSON artifact; non-zero exit on any failure."""
     settings = get_settings()
@@ -66,6 +77,21 @@ def run_cmd(
         settings = settings.model_copy(update={"model": model})
     if max_iterations is not None:
         settings = settings.model_copy(update={"max_iterations": max_iterations})
+
+    # Apply filters. If both --difficulty and explicit ids are given, the ids
+    # win (we trust the user).
+    if ids is None and (difficulty or only_multifile):
+        filtered = []
+        for t in list_tasks():
+            if difficulty and t.difficulty != difficulty:
+                continue
+            if only_multifile and "multi-file" not in t.tags:
+                continue
+            filtered.append(t.id)
+        if not filtered:
+            err.print("[yellow]no tasks matched the filter.[/yellow]")
+            raise typer.Exit(0)
+        ids = filtered
 
     def _on_task_start(task) -> None:  # type: ignore[no-untyped-def]
         console.print(f"\n[bold cyan]{task.id}[/bold cyan] — {task.title}")

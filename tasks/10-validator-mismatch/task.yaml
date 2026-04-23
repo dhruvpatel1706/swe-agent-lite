@@ -1,0 +1,11 @@
+id: 10-validator-mismatch
+title: "validator.py rejects valid input from parser.py"
+difficulty: medium
+problem: |
+  Two modules: `parser.py` turns a string like "name=Alice,age=30" into a
+  dict; `validator.py` checks that the parsed dict has `name` and `age`
+  fields. Right now the validator rejects every valid parse because it's
+  checking for capitalized field names (`Name`, `Age`) while the parser
+  produces lowercase keys. Fix whichever module is wrong so the tests pass.
+  The fix is one file — pick the right one.
+tags: [multi-file, case-mismatch]

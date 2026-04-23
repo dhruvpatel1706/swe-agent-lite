@@ -1,0 +1,44 @@
+swe-agent-lite v0.2 · suite overview artifact
+command: swe-agent-lite tasks
+
+                                  Tasks
+┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ id                  ┃ title                                        ┃ difficulty ┃ tags                     ┃
+┡━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ 01-off-by-one       │ sum_first_n returns the wrong sum            │ easy       │ off-by-one, range        │
+│ 02-empty-list       │ average crashes on empty input               │ easy       │ edge-case, div-by-zero   │
+│ 03-wrong-comparison │ is_adult returns True for age 17             │ easy       │ wrong-operator           │
+│ 04-dict-typo        │ get_user_name always returns None            │ easy       │ typo                     │
+│ 05-mutable-default  │ add_item leaks state between calls           │ medium     │ mutable-default          │
+│ 06-silent-swallow   │ parse_int returns 0 for invalid strings      │ easy       │ silent-error             │
+│ 07-missing-filter   │ filter_long returns everything               │ medium     │ missing-condition        │
+│ 08-recursion-base   │ factorial overflows the call stack           │ medium     │ missing-base-case        │
+│ 09-circular-import  │ formatter.py imports from the wrong module   │ medium     │ multi-file, wrong-import │
+│ 10-validator-misma… │ validator.py rejects valid input             │ medium     │ multi-file, case-mismat… │
+│ 11-wrong-regex      │ extract_emails misses periods in local-part  │ medium     │ regex                    │
+│ 12-missing-import   │ word_count uses re.findall, no import        │ easy       │ missing-import           │
+│ 13-shared-state-bug │ two Cart instances share the same items list │ hard       │ multi-file, class-attr   │
+└─────────────────────┴──────────────────────────────────────────────┴────────────┴──────────────────────────┘
+
+Difficulty distribution:
+  easy:   5 tasks
+  medium: 7 tasks
+  hard:   1 task
+
+Bug-type distribution:
+  off-by-one, wrong-operator, missing-condition: 3
+  import / module issues:                         3 (2 single, 1 multi-file)
+  edge-case / silent-error:                       2
+  multi-file state or reference mismatches:       3
+  regex / parsing:                                2
+
+Multi-file tasks (new in v0.2):
+  09-circular-import    — 2 files (calculator.py, formatter.py)
+  10-validator-mismatch — 2 files (parser.py, validator.py)
+  13-shared-state-bug   — 2 files (cart.py, pricing.py)
+
+Running the suite:
+  swe-agent-lite run                    # all 13 tasks
+  swe-agent-lite run --difficulty easy  # 5 easy tasks
+  swe-agent-lite run --only-multifile   # 3 multi-file tasks
+  swe-agent-lite run 01-off-by-one 09-circular-import   # specific ids

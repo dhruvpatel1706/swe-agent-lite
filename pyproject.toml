@@ -1,7 +1,7 @@
 [project]
 name = "swe-agent-lite"
-version = "0.1.0"
-description = "A SWE-bench-style agent benchmark for Claude. Curated bug-fix tasks, sandboxed workspace, pytest-based scoring, failure-mode analysis per task."
+version = "0.2.0"
+description = "A SWE-bench-style agent benchmark for Claude. 13 curated bug-fix tasks (3 multi-file), sandboxed workspace, pytest-based scoring, per-task failure-mode tags."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

@@ -1,0 +1,7 @@
+id: 12-missing-import
+title: "word_count uses re.findall but forgets to import re"
+difficulty: easy
+problem: |
+  `word_count(text)` in repo/solution.py calls `re.findall` without
+  importing `re`. Every test fails with NameError. Add the import.
+tags: [missing-import]

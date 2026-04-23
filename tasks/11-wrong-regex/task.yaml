@@ -1,0 +1,10 @@
+id: 11-wrong-regex
+title: "extract_emails misses emails with periods in the local-part"
+difficulty: medium
+problem: |
+  `extract_emails(text)` in repo/solution.py uses a regex to pull email
+  addresses out of free text. It works for `bob@example.com` but misses
+  `alice.smith@example.com` because the regex only matches letters and
+  digits before the `@`. Widen the local-part to also allow periods,
+  hyphens, and plus signs. Don't change behavior on existing tests.
+tags: [regex]

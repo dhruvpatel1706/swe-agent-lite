@@ -1,0 +1,11 @@
+id: 13-shared-state-bug
+title: "two Cart instances share the same items list"
+difficulty: hard
+problem: |
+  This package has `cart.py` (a Cart class with an `items` list and
+  `add_item`/`total` methods) and `pricing.py` (computes totals with
+  tax). Every test that creates a second Cart finds the first cart's
+  items already inside. The bug is in cart.py — a classic
+  mutable-default / class-attribute-vs-instance-attribute mistake.
+  Fix cart.py so each Cart instance has its own items list.
+tags: [multi-file, class-attribute, state-leak]
